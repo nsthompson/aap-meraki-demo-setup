@@ -1,0 +1,25 @@
+---
+- name: Playbook to configure AAP
+  connection: local
+  hosts: localhost
+  vars:
+    controller_oauthtoken: "{{ lookup('ansible.builtin.env', 'CONTROLLER_TOKEN', default=undef()) }}"
+    ssh_key_file_path: "{{ lookup('ansible.builtin.env', 'SSH_KEY_PATH', default=undef()) }}"
+    ssh_key_data: "{{ lookup('ansible.builtin.file', '{{ ssh_key_file_path }}') }}"
+    ssh_key_unlock: "{{ lookup('ansible.builtin.env', 'SSH_KEY_PWD', default=undef()) }}"
+    github_token: "{{ lookup('ansible.builtin.env', 'GITHUB_TOKEN', default=undef()) }}"
+
+  pre_tasks:
+    - name: Include vars from controller_configs directory
+      ansible.builtin.include_vars:
+        dir: ./controller_configs
+        extensions: ["yml"]
+
+  roles:
+    - {role: infra.controller_configuration.organizations, when: controller_organizations is defined and controller_oauthtoken is defined}
+    - {role: infra.controller_configuration.credential_types, when: controller_credential_types is defined and controller_oauthtoken is defined}
+    - {role: infra.controller_configuration.credentials, when: controller_credentials is defined and controller_oauthtoken is defined}
+    - {role: infra.controller_configuration.inventories, when: controller_inventories is defined and controller_oauthtoken is defined}
+    - {role: infra.controller_configuration.hosts, when: controller_hosts is defined and controller_oauthtoken is defined}
+    - {role: infra.controller_configuration.projects, when: controller_projects is defined and controller_oauthtoken is defined}
+    - {role: infra.controller_configuration.job_templates, when: controller_templates is defined and controller_oauthtoken is defined}

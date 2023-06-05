@@ -1,0 +1,5 @@
+---
+controller_organizations:
+  - name: Meraki-Demo
+    description: Meraki Demo Organization
+    galaxy_credentials: Ansible Galaxy

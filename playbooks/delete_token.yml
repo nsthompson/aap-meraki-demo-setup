@@ -1,0 +1,30 @@
+---
+- name: Playbook to delete AAP Controller OAuth Token
+  hosts: localhost
+  connection: local
+  vars:
+    controller_oauthtoken: "{{ lookup('ansible.builtin.env', 'CONTROLLER_TOKEN', default=undef()) }}"
+    env_file: "./.env"
+
+  pre_tasks:
+    - name: Include vars from controller_configs directory
+      ansible.builtin.include_vars:
+        dir: ./controller_configs
+        extensions: ["yml"]
+
+  tasks:
+    - name: Delete token
+      ansible.controller.token:
+        existing_token: "{{ controller_oauthtoken }}"
+        state: absent
+        controller_host: "{{ controller_hostname }}"
+        controller_oauthtoken: "{{ controller_oauthtoken }}"
+        validate_certs: "{{ controller_validate_certs }}"
+      when: controller_oauthtoken is defined
+
+    - name: Remove controller_token from .env file
+      ansible.builtin.lineinfile:
+        path: "{{ env_file }}"
+        line: 'export CONTROLLER_TOKEN="{{ controller_oauthtoken }}"'
+        state: absent
+      when: controller_oauthtoken is defined

@@ -1,0 +1,2 @@
+controller_hostname: CONTROLLER-HOSTNAME
+controller_validate_certs: false

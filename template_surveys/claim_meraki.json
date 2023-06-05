@@ -1,0 +1,48 @@
+{
+    "name": "Claim Meraki Order, Device, or License Survey",
+    "description": "Survey to capture necessary information to claim Meraki devices into inventory",
+    "spec": [
+      {
+        "default": "",
+        "required": true,
+        "choices": "order\ndevice\nlicense_key\nlicense_renewal",
+        "new_question": true,
+        "variable": "reg_type",
+        "question_name": "Registration Type",
+        "type": "multiplechoice"
+      },
+      {
+        "question_description": "Device Serial Numbers - One Entry Per Line",
+        "min": 0,
+        "default": "",
+        "max": 1024,
+        "required": false,
+        "new_question": true,
+        "variable": "survey_serial_numbers",
+        "question_name": "Serial Numbers",
+        "type": "textarea"
+      },
+      {
+        "question_description": "Order IDs - One Entry Per Line",
+        "min": 0,
+        "default": "",
+        "max": 1024,
+        "required": false,
+        "new_question": true,
+        "variable": "survey_order_ids",
+        "question_name": "Order IDs",
+        "type": "textarea"
+      },
+      {
+        "question_description": "License Keys - One Entry Per Line",
+        "min": 0,
+        "default": "",
+        "max": 1024,
+        "required": false,
+        "new_question": true,
+        "variable": "survey_license_keys",
+        "question_name": "License Keys",
+        "type": "textarea"
+      }
+    ]
+  }

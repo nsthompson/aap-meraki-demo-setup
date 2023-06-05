@@ -1,0 +1,44 @@
+---
+- name: Playbook to create AAP Controller OAuth Token
+  hosts: localhost
+  connection: local
+  vars:
+    env_file: "./.env"
+
+  vars_prompt:
+    - name: controller_username
+      prompt: "Username"
+      private: false
+
+    - name: controller_password
+      prompt: "Password"
+      private: true
+
+  pre_tasks:
+    - name: Include vars from controller_configs directory
+      ansible.builtin.include_vars:
+        dir: ./controller_configs
+        extensions: ["yml"]
+
+  tasks:
+    - name: Create new token using username and password
+      ansible.controller.token:
+        description: "{{ controller_username }} Access Token"
+        scope: "write"
+        state: present
+        controller_host: "{{ controller_hostname }}"
+        controller_username: "{{ controller_username }}"
+        controller_password: "{{ controller_password }}"
+        validate_certs: "{{ controller_validate_certs }}"
+
+    - name: Store controller_token in .env file
+      ansible.builtin.lineinfile:
+        path: "{{ env_file }}"
+        create: true
+        mode: "0600"
+        line: 'export CONTROLLER_TOKEN="{{ controller_token }}"'
+        state: present
+
+    - name: Reminder to source .env
+      ansible.builtin.debug:
+        msg: "Remember to source .env to load CONTROLLER_TOKEN environment variable"

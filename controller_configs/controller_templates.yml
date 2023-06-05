@@ -1,0 +1,55 @@
+---
+controller_templates:
+  - name: Claim Meraki Devices
+    organization: Meraki-Demo
+    job_type: run
+    inventory: localhost
+    execution_environment: Default execution environment
+    survey_enabled: true
+    survey: "{{ lookup('template', 'template_surveys/claim_meraki.json') | regex_replace('\\n', '') }}"
+    project: ansible-meraki-demos
+    playbook: claim_devices.yml
+    credentials:
+      - Meraki API Key
+    extra_vars:
+      org_name: "<MERAKI ORG NAME>"
+    verbosity: 0
+    state: present
+  - name: Configure Meraki Network
+    organization: Meraki-Demo
+    job_type: run
+    inventory: localhost
+    execution_environment: Default execution environment
+    project: ansible-meraki-demos
+    playbook: configure_network.yml
+    credentials:
+      - Meraki API Key
+    webhook_service: github
+    webhook_credential: Github Personal Access Token
+    verbosity: 0
+    state: present
+  - name: Unconfigure Demo Environment
+    organization: Meraki-Demo
+    job_type: run
+    inventory: localhost
+    execution_environment: Default execution environment
+    project: ansible-meraki-demos
+    playbook: unconfigure_demo.yml
+    credentials:
+      - Meraki API Key
+    verbosity: 0
+    state: present
+  - name: Send Webex Teams Message
+    organization: Meraki-Demo
+    job_type: run
+    inventory: localhost
+    execution_environment: Default execution environment
+    project: ansible-meraki-demos
+    playbook: send_webex_message.yml
+    ask_variables_on_launch: true
+    allow_simultaneous: true
+    credentials:
+      - Webex Token
+      - Meraki API Key
+    verbosity: 0
+    state: present
